@@ -1,5 +1,18 @@
 ---
 
+- package_facts:
+    manager: auto
+  when:
+      - es_version is undefined
+  tags:
+      - always
+
+- set_fact: "es_version={{ ansible_facts.packages.elasticsearch | json_query('[*].version | [0]') }}"
+  when:
+      - es_version is undefined and ansible_facts.packages.elasticsearch is defined
+  tags:
+      - always
+
 - set_fact: "es_major_version={{ es_version.split('.')[0] }}.x"
   when:
       - es_major_version is undefined
